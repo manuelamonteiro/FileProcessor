@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data>
+  <row>
+    <data_medicao>20/03/2024</data_medicao>
+    <metrica a>1.875.000</metrica a>
+    <metrica b>934</metrica b>
+    <indicador x>5,67</indicador x>
+    <indicador y>8,23</indicador y>
+  </row>
+  <row>
+    <data_medicao>27/03/2024</data_medicao>
+    <metrica a>2.156.750</metrica a>
+    <metrica b>1.287</metrica b>
+    <indicador x>6,45</indicador x>
+    <indicador y>9,78</indicador y>
+  </row>
+  <row>
+    <data_medicao>03/04/2024</data_medicao>
+    <metrica a>2.934.500</metrica a>
+    <metrica b>1.756</metrica b>
+    <indicador x>7,23</indicador x>
+    <indicador y>12,11</indicador y>
+  </row>
+</data>
