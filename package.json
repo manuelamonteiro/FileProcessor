@@ -1,0 +1,14 @@
+{
+  "name": "desafio_arquivos",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Processador de arquivos CSV, JSON, XML e TXT",
+  "main": "index.html",
+  "scripts": {
+    "start": "python3 -m http.server 8000",
+    "dev": "python3 -m http.server 8000"
+  },
+  "keywords": ["csv", "json", "xml", "parser", "data"],
+  "author": "",
+  "license": "MIT"
+}
