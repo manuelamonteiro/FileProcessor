@@ -1,10 +1,13 @@
+const ITEMS_PER_PAGE = 50
 let currentSort = { key: null, asc: true }
 let currentFilter = ''
+let currentPage = 1
 let originalRows = []
 
 export function resetState() {
   currentSort = { key: null, asc: true }
   currentFilter = ''
+  currentPage = 1
   originalRows = []
 }
 
@@ -36,6 +39,11 @@ export function renderTable(rows) {
       )
     )
   }
+
+  const totalPages = Math.ceil(rowsToRender.length / ITEMS_PER_PAGE)
+  if (currentPage > totalPages) currentPage = totalPages || 1
+  const startIdx = (currentPage - 1) * ITEMS_PER_PAGE
+  const paginatedRows = rowsToRender.slice(startIdx, startIdx + ITEMS_PER_PAGE)
 
   const table = document.createElement('table')
   table.className = 'min-w-full border bg-white shadow-sm rounded-lg overflow-hidden'
@@ -88,7 +96,7 @@ export function renderTable(rows) {
   table.appendChild(thead)
 
   const tbody = document.createElement('tbody')
-  rowsToRender.forEach((row, index) => {
+  paginatedRows.forEach((row, index) => {
     const tr = document.createElement('tr')
     tr.className = index % 2 === 0 ? 'bg-gray-50' : 'bg-white hover:bg-blue-50'
     allKeys.forEach(key => {
@@ -106,8 +114,12 @@ export function renderTable(rows) {
 
   const info = document.createElement('div')
   info.className = 'mt-2 text-sm text-gray-600'
-  info.textContent = `Exibindo ${rowsToRender.length} de ${rows.length} registros`
+  info.textContent = `Exibindo ${paginatedRows.length} de ${rowsToRender.length} registros (Página ${currentPage} de ${totalPages || 1})`
   container.appendChild(info)
+
+  if (totalPages > 1) {
+    createPaginationControls(container, totalPages)
+  }
 }
 
 function createFilterInput(container) {
@@ -130,12 +142,14 @@ function createFilterInput(container) {
 
   filterBtn.addEventListener('click', () => {
     currentFilter = filterInput.value
+    currentPage = 1
     renderTable(originalRows)
   })
 
   clearBtn.addEventListener('click', () => {
     filterInput.value = ''
     currentFilter = ''
+    currentPage = 1
     renderTable(originalRows)
   })
 
@@ -143,6 +157,42 @@ function createFilterInput(container) {
   filterDiv.appendChild(filterBtn)
   filterDiv.appendChild(clearBtn)
   container.appendChild(filterDiv)
+}
+
+function createPaginationControls(container, totalPages) {
+  const nav = document.createElement('div')
+  nav.className = 'mt-4 flex items-center justify-center gap-4'
+
+  const prevBtn = document.createElement('button')
+  prevBtn.textContent = '← Anterior'
+  prevBtn.className = 'px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded disabled:opacity-40'
+  prevBtn.disabled = currentPage === 1
+  prevBtn.addEventListener('click', () => {
+    if (currentPage > 1) {
+      currentPage--
+      renderTable(originalRows)
+    }
+  })
+
+  const nextBtn = document.createElement('button')
+  nextBtn.textContent = 'Próxima →'
+  nextBtn.className = 'px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded disabled:opacity-40'
+  nextBtn.disabled = currentPage === totalPages
+  nextBtn.addEventListener('click', () => {
+    if (currentPage < totalPages) {
+      currentPage++
+      renderTable(originalRows)
+    }
+  })
+
+  const pageInfo = document.createElement('span')
+  pageInfo.textContent = `Página ${currentPage} de ${totalPages}`
+  pageInfo.className = 'text-sm text-gray-600'
+
+  nav.appendChild(prevBtn)
+  nav.appendChild(pageInfo)
+  nav.appendChild(nextBtn)
+  container.appendChild(nav)
 }
 
 function sortTableByKey(rows, key) {
@@ -167,6 +217,7 @@ function sortTableByKey(rows, key) {
     return currentSort.asc ? compA - compB : compB - compA
   })
 
+  currentPage = 1
   renderTable(originalRows)
 }
 
