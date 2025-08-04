@@ -43,3 +43,32 @@ Se preferir, basta abrir `index.html` (duplo-clique).
     └── utils.js       # Funções auxiliares
 ```
 
+## ➕ Como adicionar novos formatos de arquivo
+
+A aplicação foi projetada para ser **extensível**. Se você precisa processar um novo tipo de arquivo (por exemplo, `.tsv`, `.yaml`, etc.), basta seguir estes passos:
+
+1. Abra `js/parse-file.js`.
+2. Dentro do `switch (extension)` adicione um novo `case` com a extensão desejada.
+3. Converta o conteúdo bruto em um array de objetos (`rawRows`). Use o parser que preferir (PapaParse, DOMParser, YAML, etc.).
+4. Preencha `rawRows` e dê `break` para que o pipeline de normalização continue funcionando.
+---
+
+## 📚 Criando ou editando o dicionário de campos
+
+Para unificar cabeçalhos que têm o mesmo significado utilizamos o objeto
+`fieldDictionary` em `js/utils.js`. Cada chave canônica contém um array com seus
+sinônimos:
+
+```js
+export const fieldDictionary = {
+  data_registro: ['data', 'data_medicao', 'registro'],
+  metrica_a: ['metrica a', 'a', 'valor_a'],
+  ...
+}
+```
+
+Se a coluna de entrada não corresponder a nenhuma chave ou sinônimo, o nome será
+"sanitizado" e usado como está. Portanto, manter o dicionário atualizado garante
+que os dados caiam na coluna correta da tabela e no JSON exportado.
+
+
